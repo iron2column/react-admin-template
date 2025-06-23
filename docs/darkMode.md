@@ -23,42 +23,39 @@ export default {
 
 1. 创建一个切换主题的按钮组件
 2. 使用 `useState` 管理主题状态
-   - 初始值从 `document.documentElement.classList` 获取
-3. 初始化组件时从 `localStorage` 获取主题状态并更新
-4. 实现切换主题逻辑
-   1. 更新 `document.documentElement.classList`
-   2. 更新主题状态逻辑
+   - 初始值从 `localStorage` 获取
+3. 监听 `isDark` 变化，进行更新：
+   1. 如果 `isDark` 为 `true`，则添加 `dark` 类到 `document.documentElement`
    3. 将主题状态保存到 `localStorage`
+4. 实现切换主题逻辑
 
 ```tsx
-// 1. 创建一个切换主题的按钮组件
+import { useState, useEffect } from 'react'
+
 export default function ThemeModeToggle() {
-  // 2. 使用 `useState` 管理主题状态
   const [isDark, setIsDark] = useState(() => {
-    return document.documentElement.classList.contains('dark')
+    const theme = localStorage.getItem('themeMode')
+    return theme === 'dark'
   })
 
-  // 3. 初始化组件时从 `localStorage` 获取主题状态并更新
   useEffect(() => {
-    const theme = localStorage.getItem('themeMode')
-    if(theme === 'dark'){
+    if (isDark) {
       document.documentElement.classList.add('dark')
-      setIsDark(true)
+      localStorage.setItem('themeMode', 'dark')
     } else {
       document.documentElement.classList.remove('dark')
-      setIsDark(false)
+      localStorage.setItem('themeMode', 'light')
     }
-  }, [])
+  }, [isDark]) // 当isDark变化时更新DOM
 
-  // 4. 实现切换主题逻辑
   const toggleTheme = () => {
-    document.documentElement.classList.toggle('dark')
     setIsDark(!isDark)
-    localStorage.setItem('themeMode', isDark ? 'dark' : 'light')
   }
 
   return (
-    <button onClick={toggleTheme}>{isDark ? 'Light Mode' : 'Dark Mode'}</button>
+    // 不包含任何样式以便嵌入到自定义组件中
+    <button onClick={toggleTheme}>切换为{isDark ? '亮色' : '暗色'}模式</button>
   )
 }
+
 ```
