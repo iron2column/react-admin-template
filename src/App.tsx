@@ -1,5 +1,9 @@
+import ThemeModeToggle from './components/ThemeModeToggle'
+
 export default function App() {
   return (
-    <div>App</div>
+    <div>
+      <ThemeModeToggle />
+    </div>
   )
 }
