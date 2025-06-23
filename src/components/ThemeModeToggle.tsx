@@ -22,6 +22,6 @@ export default function ThemeModeToggle() {
 
   return (
     // 不包含任何样式以便嵌入到自定义组件中
-    <button onClick={toggleTheme}>切换为{isDark ? '亮色' : '暗色'}模式</button>
+    <p onClick={toggleTheme}>切换为{isDark ? '亮色' : '暗色'}模式</p>
   )
 }
