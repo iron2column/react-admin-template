@@ -1,22 +1,22 @@
+import { SidebarProvider } from '@/components/ui/sidebar'
 import Header from '@/components/Header'
-import Sidebar from '@/components/Sidebar'
 import { Outlet } from 'react-router-dom'
+import AppSidebar from '@/components/appSidebar/AppSidebar'
 
 export default function RootLayout() {
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* 顶部导航栏 */}
-      <Header />
+    <SidebarProvider defaultOpen={true}>
+      {/* 侧边栏 */}
+      <AppSidebar />
 
-      <section className='flex flex-1'>
-        {/* 侧边栏 */}
-        <Sidebar />
+      {/* 右侧内容区 */}
+      <main className='flex-1'>
+        {/* 头部 */}
+        <Header />  
 
-        {/* 内容区 */}
-        <main>
-          <Outlet />
-        </main>
-      </section>
-    </div>
+        {/* 内容 */}
+        <Outlet />
+      </main>
+    </SidebarProvider>
   )
 }
