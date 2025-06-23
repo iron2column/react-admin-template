@@ -1,16 +1,14 @@
-import ThemeModeToggle from './components/ThemeModeToggle'
-import { Button } from '@/components/ui/button'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import About from "./pages/About";
 
 export default function App() {
   return (
-    <div>
-      <div id="testThemeMode" className="bg-white dark:bg-gray-800">
-        <h1>测试主题模式</h1>
-      </div>
-      <Button>11</Button>
-      <Button>
-        <ThemeModeToggle />
-      </Button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
