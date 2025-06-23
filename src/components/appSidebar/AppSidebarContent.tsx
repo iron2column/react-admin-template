@@ -7,14 +7,21 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
-  SidebarMenuSubItem,
-  SidebarMenuSubButton,
 } from '@/components/ui/sidebar'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { NavLink, useLocation } from 'react-router-dom'
 import { menu, type MenuItem, type MenuGroup } from '@/config/menu'
 import { resolveIcon } from '@/lib/resolveIcon'
-import { useMemo, useState } from 'react'
-import { Menu, ChevronDown, ChevronRight } from 'lucide-react'
+import { Menu, ChevronRight } from 'lucide-react'
 import { usePermissionsCheck } from '@/hooks/use-permissions-check'
 
 /**
@@ -38,162 +45,115 @@ function SidebarAllMenus() {
 
 /**
  * 菜单项
- * @param items 菜单项
+ * @param items 菜单项列表
  */
 function SidebarMenuItems({ items }: { items: MenuItem[] }) {
   return (
     <SidebarMenu>
       {items.map((item, index) => (
-        <MenuItemWithChildren key={`${item.path}-${index}`} menuItem={item} />
+        <HierarchicalMenu key={`${item.path}-${index}`} item={item} />
       ))}
     </SidebarMenu>
   )
 }
 
 /**
- * 带子菜单的菜单项
+ * 层级菜单
+ * @param item 菜单项
+ * @returns
  */
-function MenuItemWithChildren({ menuItem }: { menuItem: MenuItem }) {
+function HierarchicalMenu({ item }: { item: MenuItem }) {
   const location = useLocation()
-  // 权限判断
-  const hasPermissions = usePermissionsCheck(menuItem.permissions)
+  const hasChildren = !!(item.children && item.children.length > 0)
+  const isActive = isPathMatchMenuItem(location.pathname, item)
+  const { path, title, icon } = item
+  const hasPermission = usePermissionsCheck(item.permissions)
+
   // 是否隐藏
-  const isHidden = menuItem.hidden || false
-  // 子菜单
-  const children = menuItem.children || []
-  const hasChildren = children.length > 0
-  // 是否激活（当前路由匹配此菜单或其子菜单）
-  const isActive = isPathMatchMenuItem(location.pathname, menuItem)
-  // 子菜单展开状态 - 默认展开激活的菜单
-  const [isOpen, setIsOpen] = useState(isActive)
-  // 图标
-  const icon = useMemo(
-    () =>
-      menuItem.icon ? resolveIcon(menuItem.icon) : <Menu className="w-4 h-4" />,
-    [menuItem.icon]
-  )
+  if (item.hidden) return null
 
-  // 如果无权限或设置为隐藏，则不渲染
-  if (!hasPermissions && menuItem.permissions) return null
-  if (isHidden) return null
+  // 是否有权限
+  if (item.permissions && !hasPermission) return null
 
-  const hasChildrenRender = (
-    <>
-      {/* 带子菜单的菜单项 */}
-      <SidebarMenuButton
-        isActive={isActive}
-        onClick={() => setIsOpen(!isOpen)}
-        className="justify-between cursor-pointer"
-      >
-        <div className="flex items-center gap-2">
-          {icon}
-          <span>{menuItem.title}</span>
-        </div>
-        <ChevronRight className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
-      </SidebarMenuButton>
-
-      {/* 子菜单 */}
-      {isOpen && (
-        <SidebarMenuSub>
-          {children.map((child, childIndex) => (
-            <SidebarMenuSubItem key={`${child.path}-${childIndex}`}>
-              <SubMenuItem menuItem={child} />
-            </SidebarMenuSubItem>
-          ))}
-        </SidebarMenuSub>
-      )}
-    </>
-  )
-
-  const noChildrenRender = (
-    /* 无子菜单的菜单项 */
-    <SidebarMenuButton asChild isActive={isActive}>
-      <NavLink to={menuItem.path}>
-        {icon}
-        <span>{menuItem.title}</span>
-      </NavLink>
-    </SidebarMenuButton>
-  )
+  if (!hasChildren) {
+    return (
+      <SidebarMenuItem>
+        <TooltipWrapper title={title}>
+          <SidebarMenuButton asChild isActive={isActive}>
+            <NavLink to={path}>
+              {/* icon */}
+              <MenuIcon icon={icon} />
+              {/* title */}
+              <p className="truncate">{title}</p>
+            </NavLink>
+          </SidebarMenuButton>
+        </TooltipWrapper>
+      </SidebarMenuItem>
+    )
+  }
 
   return (
-    <SidebarMenuItem>
-      {hasChildren ? hasChildrenRender : noChildrenRender}
-    </SidebarMenuItem>
+    <Collapsible asChild className="group/collapsible">
+      <SidebarMenuItem>
+        {/* 折叠触发器 */}
+        <TooltipWrapper title={title}>
+          <CollapsibleTrigger asChild>
+            <SidebarMenuButton>
+              {/* icon */}
+              <MenuIcon icon={icon} />
+              {/* title */}
+              <p className="truncate">{title}</p>
+              {/* 折叠指示器 */}
+              <FoldIcon />
+            </SidebarMenuButton>
+          </CollapsibleTrigger>
+        </TooltipWrapper>
+
+        {/* 折叠内容 */}
+        <CollapsibleContent>
+          <SidebarMenuSub className="pr-0 mr-0">
+            {item.children?.map((child, childIndex) => (
+              <HierarchicalMenu
+                key={`${child.path}-${childIndex}`}
+                item={child}
+              />
+            ))}
+          </SidebarMenuSub>
+        </CollapsibleContent>
+      </SidebarMenuItem>
+    </Collapsible>
   )
 }
 
 /**
- * 子菜单项组件
+ * 菜单图标
+ * @param icon 图标
  */
-function SubMenuItem({ menuItem }: { menuItem: MenuItem }) {
-  const location = useLocation()
-  const { path, title, permissions, hidden = false } = menuItem
-  const children = menuItem.children || []
+function MenuIcon({ icon }: { icon: string | undefined }) {
+  return icon ? resolveIcon(icon) : <Menu className="w-4 h-4" />
+}
 
-  // 权限判断
-  const hasPermissions = usePermissionsCheck(permissions)
-
-  // 是否有孙菜单
-  const hasChildren = children.length > 0
-
-  // 是否激活
-  const isActive = isPathMatchMenuItem(location.pathname, menuItem)
-
-  // 子菜单展开状态
-  const [isOpen, setIsOpen] = useState(isActive)
-
-  // 图标
-  const icon = useMemo(
-    () => (menuItem.icon ? resolveIcon(menuItem.icon) : <Menu className="w-4 h-4" />),
-    [menuItem.icon]
-  )
-
-  // 如果无权限或设置为隐藏，则不渲染
-  if (!hasPermissions && permissions) return null
-  if (hidden) return null
-
-  // 有孙菜单的子菜单项
-  if (hasChildren) {
-    return (
-      <>
-        <SidebarMenuSubButton
-          isActive={isActive}
-          onClick={() => setIsOpen(!isOpen)}
-          className="justify-between"
-        >
-          <div className="flex items-center gap-2">
-            {icon}
-            <span>{title}</span>
-          </div>
-          {isOpen ? (
-            <ChevronDown className="h-3 w-3" />
-          ) : (
-            <ChevronRight className="h-3 w-3" />
-          )}
-        </SidebarMenuSubButton>
-
-        {/* 递归渲染孙菜单 */}
-        {isOpen && (
-          <div className="ml-2 border-l border-sidebar-border pl-2 mt-1">
-            {children.map((child, index) => (
-              <SidebarMenuSubItem key={`${child.path}-${index}`}>
-                <SubMenuItem menuItem={child} />
-              </SidebarMenuSubItem>
-            ))}
-          </div>
-        )}
-      </>
-    )
-  }
-
-  // 无孙菜单的子菜单项
+/**
+ * 折叠图标
+ */
+function FoldIcon() {
   return (
-    <SidebarMenuSubButton asChild isActive={isActive}>
-      <NavLink to={path}>
-        {icon}
-        <span>{title}</span>
-      </NavLink>
-    </SidebarMenuSubButton>
+    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+  )
+}
+
+function TooltipWrapper({
+  children,
+  title,
+}: {
+  children: React.ReactNode
+  title: string
+}) {
+  return (
+    <Tooltip delayDuration={800}>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipContent side="right">{title}</TooltipContent>
+    </Tooltip>
   )
 }
 

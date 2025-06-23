@@ -87,6 +87,18 @@ export const menu: MenuGroup[] = [
               {
                 title: '仪表盘 4-2-2',
                 path: '/dashboard4/2/2',
+                children: [
+                  {
+                    title: '仪表盘 4-2-2-1',
+                    path: '/dashboard4/2/2/1',
+                    children: [
+                      {
+                        title: '仪表盘 4-2-2-1-1',
+                        path: '/dashboard4/2/2/1/1',
+                      },
+                    ],
+                  },
+                ],
               },
             ],
           },
