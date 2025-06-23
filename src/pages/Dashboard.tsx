@@ -1,7 +1,20 @@
-import React from 'react'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
 
 export default function Dashboard() {
   return (
-    <div>Dashboard</div>
+    <div>
+      <div>Dashboard</div>
+      <Collapsible>
+        <CollapsibleTrigger>Can I use this in my project?</CollapsibleTrigger>
+        <CollapsibleContent>
+          Yes. Free to use for personal and commercial projects. No attribution
+          required.
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
   )
 }
