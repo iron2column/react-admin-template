@@ -4,12 +4,13 @@ import RootLayout from '@/layouts/RootLayout'
 import Dashboard from '@/pages/Dashboard'
 
 const NotFound = lazy(() => import('@/pages/NotFound'))
+const Error = lazy(() => import('@/pages/Error'))
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <RootLayout />,
-    errorElement: <NotFound />,
+    errorElement: <Error />,
     children: [
       { index: true, element: <Dashboard /> },
       { path: 'login', element: <div>TODO:login</div> },
