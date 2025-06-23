@@ -1,19 +1,19 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { lazy } from 'react'
-import Home from '@/pages/Home'
-import About from '@/pages/About'
+import RootLayout from '@/layouts/RootLayout'
+import Dashboard from '@/pages/Dashboard'
 
 const NotFound = lazy(() => import('@/pages/NotFound'))
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Home />,
+    element: <RootLayout />,
     errorElement: <NotFound />,
-  },
-  {
-    path: '/about',
-    element: <About />,
+    children: [
+      { index: true, element: <Dashboard /> },
+      { path: 'login', element: <div>TODO:login</div> },
+    ],
   },
   {
     path: '*',
