@@ -2,7 +2,8 @@ import { createBrowserRouter } from 'react-router-dom'
 import { lazy } from 'react'
 import RootLayout from '@/layouts/RootLayout'
 import Dashboard from '@/pages/Dashboard'
-
+import LoginLayout from '@/layouts/LoginLayout'
+import Login from '@/pages/Login'
 const SettingsLayout = lazy(() => import('@/layouts/SettingsLayout'))
 
 const NotFound = lazy(() => import('@/pages/NotFound'))
@@ -26,8 +27,16 @@ const router = createBrowserRouter([
           { path: 'profile', element: <Profile /> },
           { path: 'security', element: <Security /> },
         ],
-      }
+      },
     ],
+  },
+  {
+    path: '/login',
+    element: (
+      <LoginLayout>
+        <Login />
+      </LoginLayout>
+    ),
   },
   {
     path: '*',

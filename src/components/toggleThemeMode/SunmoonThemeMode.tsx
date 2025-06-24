@@ -2,12 +2,12 @@ import { Button } from '@/components/ui/button'
 import { useThemeMode } from '@/lib/theme-mode-context'
 import { Sun, Moon } from 'lucide-react'
 
-export default function SunmoonThemeMode() {
+export default function SunmoonThemeMode({ variant = 'outline' }: { variant?: 'outline' | 'ghost' }) {
   const { themeMode, setThemeMode } = useThemeMode()
 
   return (
     <Button
-      variant="outline"
+      variant={variant}
       size="icon"
       onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}
     >
