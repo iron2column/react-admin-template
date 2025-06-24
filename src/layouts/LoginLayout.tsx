@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react'
 import '@/assets/styles/login-background.css'
 import { Columns3Cog } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -10,16 +9,15 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from '@/components/ui/dropdown-menu'
-import { useState } from 'react'
 import { PanelLeft, PanelRight, SquareSquare } from 'lucide-react'
+import { usePreferencesStore } from '@/stores/usePreferencesStore'
 
 export default function LoginLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  // 登录布局
-  const currentLoginLayout: 'left' | 'center' | 'right' = 'center'
+  const currentLoginLayout = usePreferencesStore((state) => state.loginPanelLayout)
 
   const renderPanel = () => {
     if (currentLoginLayout === 'left') {
@@ -86,26 +84,18 @@ function ControlCapsule() {
   return (
     <div className="absolute top-0 right-0 border-1 m-5 py-1 px-2 rounded-4xl flex items-center justify-evenly">
       <LoginPanelLayoutController />
-      
+
       <SunmoonThemeMode variant="ghost" />
     </div>
   )
 }
 
 function LoginPanelLayoutController() {
-  const [position, setPosition] = useState<'left' | 'center' | 'right'>(
-    'center'
-  )
-  // 创建类型安全的处理函数
-  const handleValueChange = (value: string) => {
-    if (value === 'left' || value === 'center' || value === 'right') {
-      setPosition(value)
-    }
+  const currentLoginLayout = usePreferencesStore((state) => state.loginPanelLayout)
+  const update = usePreferencesStore((state) => state.update)
+  const setCurrentLoginLayout = (value: 'left' | 'center' | 'right') => {
+    update('loginPanelLayout', value)
   }
-
-  useEffect(() => {
-    console.log(position)
-  }, [position])
 
   return (
     <DropdownMenu>
@@ -116,8 +106,8 @@ function LoginPanelLayoutController() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-32 min-w-min">
         <DropdownMenuRadioGroup
-          value={position}
-          onValueChange={handleValueChange}
+          value={currentLoginLayout}
+          onValueChange={(value) => setCurrentLoginLayout(value as 'left' | 'center' | 'right')}
         >
           <DropdownMenuRadioItem value="left">
             <PanelLeft className="w-2 h-2" />
