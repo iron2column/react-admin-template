@@ -9,10 +9,6 @@ import { defaultPreferences } from '@/config/defaultPreferences'
 export const setPreference = async (key: string, value: unknown) => {
   const db = await initDB()
 
-  // 性能优化：写前判断，避免重复写入
-  const existing = await db.get('preferences', key)
-  if (existing === value) return
-
   await db.put('preferences', value, key)
 }
 

@@ -5,33 +5,6 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>React Admin Template</title>
-    <!-- 预加载主题脚本，避免闪烁 -->
-    <script>
-      (function() {
-        // 从localStorage获取主题，默认为light
-        const themeMode = localStorage.getItem('themeMode') || 'light';
-        // 立即应用到HTML元素，在DOM渲染前
-        if (themeMode === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-        
-        // 添加一个临时样式禁用过渡，直到页面完全加载
-        document.documentElement.classList.add('no-theme-transition');
-        window.addEventListener('load', function() {
-          // 页面加载完成后移除禁用过渡的类
-          setTimeout(() => {
-            document.documentElement.classList.remove('no-theme-transition');
-          }, 100);
-        });
-      })();
-    </script>
-    <style>
-      .no-theme-transition * {
-        transition-property: none !important;
-      }
-    </style>
   </head>
   <body>
     <div id="root"></div>

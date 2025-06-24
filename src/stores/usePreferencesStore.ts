@@ -47,7 +47,7 @@ export const usePreferencesStore = create<PreferencesState>((set) => ({
     }))
 
     // 更新db中的偏好
-    prefsDB.setPreferenceDebounced(key, value)
+    prefsDB.setPreference(key, value)
   },
 
   /**
