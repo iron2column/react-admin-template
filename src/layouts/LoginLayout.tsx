@@ -17,7 +17,9 @@ export default function LoginLayout({
 }: {
   children: React.ReactNode
 }) {
-  const currentLoginLayout = usePreferencesStore((state) => state.loginPanelLayout)
+  const currentLoginLayout = usePreferencesStore(
+    (state) => state.loginPanelLayout
+  )
 
   const renderPanel = () => {
     if (currentLoginLayout === 'left') {
@@ -42,13 +44,17 @@ export default function LoginLayout({
 
 function LeftPanelWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen w-screen items-center">
-      <section className="w-full lg:w-2/5 h-full flex items-center justify-center transition-all">
+    <div className="flex h-screen w-screen items-center login-background-deep">
+      <section className="w-full lg:w-2/5 h-full flex items-center justify-center transition-al bg-white dark:bg-slate-900 z-10 relative">
         {children}
       </section>
 
-      <section className="hidden lg:flex w-3/5 h-full items-center justify-center transition-all">
-        <div className="text-neutral-700">开箱即用</div>
+      <section className="hidden lg:flex w-3/5 h-full items-center justify-center transition-all relative">
+        <div className="absolute login-background w-full h-full opacity-90 dark:opacity-30"></div>
+        <section className='space-y-8 flex flex-col items-start relative z-10'>
+          <div className="text-7xl font-bold text-neutral-700/80 dark:text-white/90">Hello :)</div>
+          <div className="text-7xl font-bold text-neutral-700/80 dark:text-white/90">React Admin Template</div>
+        </section>
       </section>
     </div>
   )
@@ -57,8 +63,9 @@ function LeftPanelWrapper({ children }: { children: React.ReactNode }) {
 function CenterPanelWrapper({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen w-screen items-center">
-      <section className="w-full h-full flex items-center justify-center transition-al">
-        <section className="w-full md:w-2/3 lg:w-1/2 xl:w-1/3 bg-background border-1 rounded-lg px-6 py-10 pb-20">
+      <div className="absolute login-background w-full h-full opacity-90 dark:opacity-30"></div>
+      <section className="w-full h-full flex items-center justify-center transition-all relative z-10">
+        <section className="w-full sm:w-4/5 md:w-2/3 lg:w-3/4 xl:w-2/4 2xl:w-1/3  dark:bg-slate-800/90 border rounded-lg px-6 py-10 shadow-lg transition-all">
           {children}
         </section>
       </section>
@@ -69,20 +76,28 @@ function CenterPanelWrapper({ children }: { children: React.ReactNode }) {
 function RightPanelWrapper({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-row-reverse h-screen w-screen items-center">
-      <section className="w-full lg:w-2/5 h-full flex items-center justify-center transition-all">
+      <section className="w-full lg:w-2/5 h-full flex items-center justify-center transition-all bg-white dark:bg-slate-900 z-10 relative">
         {children}
       </section>
 
-      <section className="hidden lg:flex w-3/5 h-full items-center justify-center transition-all">
-        <div className="text-neutral-700">开箱即用</div>
+      <section className="hidden lg:flex w-3/5 h-full items-center justify-center transition-all relative">
+        <div className="absolute login-background w-full h-full opacity-90 dark:opacity-30"></div>
+        <section className='space-y-8 flex flex-col items-start relative z-10'>
+          <div className="text-7xl font-bold text-neutral-700/80 dark:text-white/90">Hello :)</div>
+          <div className="text-7xl font-bold text-neutral-700/80 dark:text-white/90">React Admin Template</div>
+        </section>
       </section>
     </div>
   )
 }
 
+/**
+ * 控制胶囊
+ * 包含登录面板布局控制器和主题模式控制器
+ */
 function ControlCapsule() {
   return (
-    <div className="absolute top-0 right-0 border-1 m-5 py-1 px-2 rounded-4xl flex items-center justify-evenly">
+    <div className="absolute top-0 right-0 border-1 m-5 py-1 px-2 rounded-4xl flex items-center justify-evenly z-10">
       <LoginPanelLayoutController />
 
       <SunmoonThemeMode variant="ghost" />
@@ -90,8 +105,13 @@ function ControlCapsule() {
   )
 }
 
+/**
+ * 控制登录面板的布局
+ */
 function LoginPanelLayoutController() {
-  const currentLoginLayout = usePreferencesStore((state) => state.loginPanelLayout)
+  const currentLoginLayout = usePreferencesStore(
+    (state) => state.loginPanelLayout
+  )
   const update = usePreferencesStore((state) => state.update)
   const setCurrentLoginLayout = (value: 'left' | 'center' | 'right') => {
     update('loginPanelLayout', value)
@@ -107,7 +127,9 @@ function LoginPanelLayoutController() {
       <DropdownMenuContent className="w-32 min-w-min">
         <DropdownMenuRadioGroup
           value={currentLoginLayout}
-          onValueChange={(value) => setCurrentLoginLayout(value as 'left' | 'center' | 'right')}
+          onValueChange={(value) =>
+            setCurrentLoginLayout(value as 'left' | 'center' | 'right')
+          }
         >
           <DropdownMenuRadioItem value="left">
             <PanelLeft className="w-2 h-2" />
