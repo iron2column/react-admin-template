@@ -3,6 +3,7 @@ import * as prefsDB from '@/lib/db/modules/preferences'
 
 // 定义偏好状态类型
 interface PreferencesState {
+  initialized: boolean
   themeMode: 'light' | 'dark'
   loginPanelLayout: 'left' | 'center' | 'right'
   init: () => Promise<void>
@@ -11,6 +12,10 @@ interface PreferencesState {
 }
 
 export const usePreferencesStore = create<PreferencesState>((set) => ({
+  /**
+   * 是否已初始化
+   */
+  initialized: false,
   /**
    * 主题模式
    */
@@ -29,7 +34,7 @@ export const usePreferencesStore = create<PreferencesState>((set) => ({
     // 从db中获取持久化的偏好
     const prefs = await prefsDB.getAllPreferences()
     // 设置到store中
-    set(prefs)
+    set({ ...prefs, initialized: true })
   },
 
   /**
@@ -59,6 +64,6 @@ export const usePreferencesStore = create<PreferencesState>((set) => ({
 
     // 重置store中的偏好为默认值
     const prefs = await prefsDB.getAllPreferences()
-    set(prefs)
+    set({ ...prefs, initialized: true })
   },
 }))
