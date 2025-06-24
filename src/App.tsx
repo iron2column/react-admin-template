@@ -1,4 +1,3 @@
-import { ThemeProvider } from './lib/theme-mode-context'
 import { RouterProvider } from 'react-router-dom'
 import router from './routes'
 import { usePreferencesStore } from '@/stores/usePreferencesStore'
@@ -11,9 +10,5 @@ export default function App() {
     initPreferences()
   }, [])
 
-  return (
-    <ThemeProvider>
-      <RouterProvider router={router} />
-    </ThemeProvider>
-  )
+  return <RouterProvider router={router} />
 }
