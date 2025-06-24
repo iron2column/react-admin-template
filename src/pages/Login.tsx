@@ -16,9 +16,11 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 export default function Login() {
   const [loginType, setLoginType] = useState<string>('user')
+  const navigate = useNavigate()
 
   return (
     <div
@@ -97,7 +99,10 @@ export default function Login() {
           </div>
 
           {/* 登录按钮 */}
-          <Button className="w-full">登录</Button>
+          <Button className="w-full" onClick={() => {
+            console.log('登录')
+            navigate('/')
+          }}>登录</Button>
 
           {/* 其他登录方式 */}
           <div className="flex flex-col gap-2">
