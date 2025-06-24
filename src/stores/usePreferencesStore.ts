@@ -38,10 +38,16 @@ export const usePreferencesStore = create<PreferencesState>((set) => ({
    * @param value 偏好值
    */
   update: async (key: string, value: unknown) => {
+    // docs：先进行状态更新，再防抖写入 db
+
+    // 更新store中的偏好(合并状态)
+    set((state) => ({
+      ...state,
+      [key]: value
+    }))
+
     // 更新db中的偏好
-    await prefsDB.setPreference(key, value)
-    // 更新store中的偏好
-    set({ [key]: value })
+    prefsDB.setPreferenceDebounced(key, value)
   },
 
   /**

@@ -1,4 +1,4 @@
-import { initDB } from '../index'
+import { createDebouncedWriter, initDB } from '../index'
 import { defaultPreferences } from '@/config/defaultPreferences'
 
 /**
@@ -14,6 +14,15 @@ export const setPreference = async (key: string, value: unknown) => {
   if (existing === value) return
 
   await db.put('preferences', value, key)
+}
+
+const _debounced = createDebouncedWriter(setPreference, 500)
+
+/**
+ * 防抖写入偏好
+ */
+export const setPreferenceDebounced = (key: string, value: unknown) => {
+  _debounced(key, value)
 }
 
 /**
