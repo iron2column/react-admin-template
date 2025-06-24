@@ -29,10 +29,7 @@ export const usePreferencesStore = create<PreferencesState>((set) => ({
     // 从db中获取持久化的偏好
     const prefs = await prefsDB.getAllPreferences()
     // 设置到store中
-    set({
-      themeMode: (prefs.themeMode as 'light' | 'dark') || 'light',
-      loginPanelLayout: (prefs.loginPanelLayout as 'left' | 'center' | 'right') || 'left',
-    })
+    set(prefs)
   },
 
   /**
@@ -53,10 +50,9 @@ export const usePreferencesStore = create<PreferencesState>((set) => ({
   reset: async () => {
     // 重置db中的偏好
     await prefsDB.resetPreferences()
-    // 重置store中的偏好
-    set({
-      themeMode: 'light',
-      loginPanelLayout: 'left',
-    })
+
+    // 重置store中的偏好为默认值
+    const prefs = await prefsDB.getAllPreferences()
+    set(prefs)
   },
 }))
