@@ -65,7 +65,7 @@ function CenterPanelWrapper({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen w-screen items-center">
       <div className="absolute login-background w-full h-full opacity-90 dark:opacity-30"></div>
       <section className="w-full h-full flex items-center justify-center transition-all relative z-10">
-        <section className="w-full sm:w-4/5 md:w-2/3 lg:w-3/4 xl:w-2/4 2xl:w-1/3  dark:bg-slate-800/90 border rounded-lg px-6 py-10 shadow-lg transition-all">
+        <section className="w-full sm:w-4/5 md:w-2/3 lg:w-3/4 xl:w-2/4 2xl:w-1/3 bg-background  dark:bg-slate-800/90 border rounded-lg px-6 py-10 shadow-lg transition-all">
           {children}
         </section>
       </section>
